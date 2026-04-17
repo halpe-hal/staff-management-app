@@ -55,10 +55,12 @@ def show_dashboard_excluding_tax():
     all_store_divisions = [d for d in all_divisions if "[店舗]" in d]
 
     # --- 仮想集計エントリを動的生成 ---
+    brand_store_divisions = [d for d in divisions if "[店舗]" in d]
+
     virtual_entries = []
     if all_store_divisions:
         virtual_entries.append("店舗合計")
-    if divisions:
+    if len(brand_store_divisions) >= 2:
         virtual_entries.append(f"{TARGET_BRAND}合計")
 
     real_divisions = [d for d in divisions if d != "Lia全体合計"]
