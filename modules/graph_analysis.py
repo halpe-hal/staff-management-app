@@ -47,7 +47,6 @@ def show_graph_analysis():
     TARGET_BRAND = "H.A.L. cafe"
     all_divisions = get_divisions()
     divisions = [d for d in all_divisions if TARGET_BRAND in d]
-    all_store_divisions = [d for d in all_divisions if "[店舗]" in d]
     brand_store_divisions = [d for d in divisions if "[店舗]" in d]
     sales_data = get_sales_totals_all(list(range(start_date.year - 1, end_date.year + 1)))
     expense_data = get_expense_totals_all(list(range(start_date.year - 1, end_date.year + 1)))
@@ -63,16 +62,14 @@ def show_graph_analysis():
     df_sales["年月"] = df_sales["year"].astype(str) + " / " + df_sales["month"].astype(str).str.zfill(2)
     df_expense["年月"] = df_expense["year"].astype(str) + " / " + df_expense["month"].astype(str).str.zfill(2)
 
-    # 店舗合計タブを先頭、ブランド合計は[店舗]が2件以上の場合のみ追加
+    # ブランド合計は[店舗]が2件以上の場合のみ追加
     brand_total_tabs = ([f"{TARGET_BRAND}合計"] if len(brand_store_divisions) >= 2 else [])
-    tab_labels = (["店舗合計"] if all_store_divisions else []) + brand_total_tabs + divisions
+    tab_labels = brand_total_tabs + divisions
     tabs = st.tabs(tab_labels)
 
     for tab_name, tab in zip(tab_labels, tabs):
         with tab:
-            if tab_name == "店舗合計":
-                df_sales_div = df_sales[df_sales["top_category"].isin(all_store_divisions)].copy()
-            elif tab_name == f"{TARGET_BRAND}合計":
+            if tab_name == f"{TARGET_BRAND}合計":
                 df_sales_div = df_sales[df_sales["top_category"].isin(brand_store_divisions)].copy()
             elif tab_name == "事業本部":
                 df_sales_div = df_sales.copy()
@@ -95,9 +92,7 @@ def show_graph_analysis():
                 st.info("該当期間の売上データがありません。")
 
             # --- 支出データ（個別カテゴリ折れ線＋目標） ---
-            if tab_name == "店舗合計":
-                df_expense_div = df_expense[df_expense["top_category"].isin(all_store_divisions)].copy()
-            elif tab_name == f"{TARGET_BRAND}合計":
+            if tab_name == f"{TARGET_BRAND}合計":
                 df_expense_div = df_expense[df_expense["top_category"].isin(brand_store_divisions)].copy()
             elif tab_name == "事業本部":
                 df_expense_div = df_expense.copy()
