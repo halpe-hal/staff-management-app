@@ -89,7 +89,7 @@ def show_dashboard():
     pl_dict = {
         "売上（税率10%）": {}, "売上（税率8%）": {}, "その他売上（税率10%）": {}, "その他売上（税率8%）": {},
         "総売上": {}, "原価": {}, "売上総利益": {}, "人件費": {}, "源泉税・地方税・社会保険料": {}, "水道光熱費": {}, "消耗品費・その他諸経費": {},
-        "その他固定費": {}, "家賃": {}, "広告費": {}, "融資返済利息": {}, "営業利益": {}
+        "その他固定費": {}, "家賃": {}, "広告費": {}, "融資返済利息": {},  # "営業利益": {}
     }
 
     for ym in months:
@@ -111,10 +111,10 @@ def show_dashboard():
 
         総売上 = u10 + u8 + o10 + o8
         売上総利益 = 総売上 - 原価
-        営業利益 = 売上総利益 - 人件費 - 水道光熱費 - 消耗品 - その他固定費 - 家賃 - 広告費 - 融資利息 - 臨時
+        # 営業利益 = 売上総利益 - 人件費 - 水道光熱費 - 消耗品 - その他固定費 - 家賃 - 広告費 - 融資利息 - 臨時
 
         for key, value in zip(pl_dict.keys(), [u10, u8, o10, o8, 総売上, 原価, 売上総利益, 人件費, 非経費人件費, 水道光熱費, 消耗品,
-                                               その他固定費, 家賃, 広告費, 融資利息, 臨時, 営業利益]):
+                                               その他固定費, 家賃, 広告費, 融資利息, 臨時]):
             pl_dict[key][ym] = value
 
         # 格納
@@ -133,7 +133,7 @@ def show_dashboard():
         pl_dict["家賃"][ym] = 家賃
         pl_dict["広告費"][ym] = 広告費
         pl_dict["融資返済利息"][ym] = 融資利息
-        pl_dict["営業利益"][ym] = 営業利益
+        # pl_dict["営業利益"][ym] = 営業利益
 
 
     # --- DataFrame化 ---
@@ -165,7 +165,7 @@ def show_dashboard():
     df = insert_after(df, "家賃", "家賃率", pct_row(df.loc["家賃"]))
     df = insert_after(df, "家賃率", "FLR比率", pct_row(df.loc["原価"] + df.loc["人件費"] + df.loc["源泉税・地方税・社会保険料"] + df.loc["家賃"]))
     df = insert_after(df, "広告費", "広告費率", pct_row(df.loc["広告費"]))
-    df = insert_after(df, "営業利益", "営業利益率", pct_row(df.loc["営業利益"]))
+    # df = insert_after(df, "営業利益", "営業利益率", pct_row(df.loc["営業利益"]))
 
     # --- 表示用変換 ---
     def format_val(val, row_label):
@@ -200,7 +200,7 @@ def show_dashboard():
             "家賃率": target.get("rent_rate", 0),
             "FLR比率": target.get("flr_rate", 0),
             "広告費率": target.get("ad_rate", 0),
-            "営業利益率": target.get("first_op_profit_rate", 0)
+            # "営業利益率": target.get("first_op_profit_rate", 0)
         }
     else:
         targets = {}
