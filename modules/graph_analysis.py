@@ -110,19 +110,27 @@ def show_graph_analysis():
                         "原価（仕入れ高）": target_row.get("cost_rate", 0),
                         "人件費": target_row.get("labor_rate", 0),
                         "FL比率": target_row.get("fl_rate", 0),
-                        "水道光熱費": target_row.get("utility_rate", 0),
-                        "消耗品費・その他諸経費": target_row.get("misc_rate", 0),
-                        "その他固定費": target_row.get("other_fixed_rate", 0),
-                        "家賃": target_row.get("rent_rate", 0),
-                        "営業利益": target_row.get("op_profit_rate", 0)
+                        # "水道光熱費": target_row.get("utility_rate", 0),
+                        # "消耗品費・その他諸経費": target_row.get("misc_rate", 0),
+                        # "その他固定費": target_row.get("other_fixed_rate", 0),
+                        # "家賃": target_row.get("rent_rate", 0),
+                        # "営業利益": target_row.get("op_profit_rate", 0)
                     }
                 else:
                     target_map = {}
+
+                # 水道光熱費以下をコメントアウト
+                _hidden_categories = {
+                    "水道光熱費", "消耗品費・その他諸経費", "その他固定費",
+                    "家賃", "広告費", "融資返済利息", "営業利益",
+                }
 
                 # ✅ 月別売上を辞書化（目標額算出用）
                 sales_lookup = dict(zip(df_sales_grouped["年月"], df_sales_grouped["total_amount"]))
 
                 for category in category_order:
+                    if category in _hidden_categories:
+                        continue
                     if category not in df_expense_grouped["second_category"].unique():
                         continue  # データなしカテゴリはスキップ
 
