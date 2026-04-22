@@ -110,7 +110,7 @@ def show():
         }
         </style>
         <div class="custom-header">
-            H.A.L. cafe 損益計算
+            H.A.L. cafe 原価・人件費率
         </div>
         """,
         unsafe_allow_html=True

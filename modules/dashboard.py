@@ -88,8 +88,9 @@ def show_dashboard():
     # --- PL構築 ---
     pl_dict = {
         "売上（税率10%）": {}, "売上（税率8%）": {}, "その他売上（税率10%）": {}, "その他売上（税率8%）": {},
-        "総売上": {}, "原価": {}, "売上総利益": {}, "人件費": {}, "源泉税・地方税・社会保険料": {}, "水道光熱費": {}, "消耗品費・その他諸経費": {},
-        "その他固定費": {}, "家賃": {}, "広告費": {}, "融資返済利息": {},  # "営業利益": {}
+        "総売上": {}, "原価": {}, "売上総利益": {}, "人件費": {}, "源泉税・地方税・社会保険料": {},
+        # "水道光熱費": {}, "消耗品費・その他諸経費": {},
+        # "その他固定費": {}, "家賃": {}, "広告費": {}, "融資返済利息": {},  # "営業利益": {}
     }
 
     for ym in months:
@@ -101,20 +102,19 @@ def show_dashboard():
         原価 = expense_dict.get((year, month, "原価（仕入れ高）"), 0)
         人件費 = expense_dict.get((year, month, "人件費"), 0)
         非経費人件費 = expense_dict.get((year, month, "源泉税・地方税・社会保険料"), 0)
-        水道光熱費 = expense_dict.get((year, month, "水道光熱費"), 0)
-        消耗品 = expense_dict.get((year, month, "消耗品費・その他諸経費"), 0)
-        その他固定費 = expense_dict.get((year, month, "その他固定費"), 0)
-        家賃 = expense_dict.get((year, month, "家賃"), 0)
-        広告費 = expense_dict.get((year, month, "広告費"), 0)
-        融資利息 = expense_dict.get((year, month, "融資返済利息"), 0)
-        臨時 = expense_dict.get((year, month, "臨時諸経費"), 0)
+        # 水道光熱費 = expense_dict.get((year, month, "水道光熱費"), 0)
+        # 消耗品 = expense_dict.get((year, month, "消耗品費・その他諸経費"), 0)
+        # その他固定費 = expense_dict.get((year, month, "その他固定費"), 0)
+        # 家賃 = expense_dict.get((year, month, "家賃"), 0)
+        # 広告費 = expense_dict.get((year, month, "広告費"), 0)
+        # 融資利息 = expense_dict.get((year, month, "融資返済利息"), 0)
+        # 臨時 = expense_dict.get((year, month, "臨時諸経費"), 0)
 
         総売上 = u10 + u8 + o10 + o8
         売上総利益 = 総売上 - 原価
         # 営業利益 = 売上総利益 - 人件費 - 水道光熱費 - 消耗品 - その他固定費 - 家賃 - 広告費 - 融資利息 - 臨時
 
-        for key, value in zip(pl_dict.keys(), [u10, u8, o10, o8, 総売上, 原価, 売上総利益, 人件費, 非経費人件費, 水道光熱費, 消耗品,
-                                               その他固定費, 家賃, 広告費, 融資利息, 臨時]):
+        for key, value in zip(pl_dict.keys(), [u10, u8, o10, o8, 総売上, 原価, 売上総利益, 人件費, 非経費人件費]):
             pl_dict[key][ym] = value
 
         # 格納
@@ -127,12 +127,12 @@ def show_dashboard():
         pl_dict["売上総利益"][ym] = 売上総利益
         pl_dict["人件費"][ym] = 人件費
         pl_dict["源泉税・地方税・社会保険料"][ym] = 非経費人件費
-        pl_dict["水道光熱費"][ym] = 水道光熱費
-        pl_dict["消耗品費・その他諸経費"][ym] = 消耗品 + 臨時
-        pl_dict["その他固定費"][ym] = その他固定費
-        pl_dict["家賃"][ym] = 家賃
-        pl_dict["広告費"][ym] = 広告費
-        pl_dict["融資返済利息"][ym] = 融資利息
+        # pl_dict["水道光熱費"][ym] = 水道光熱費
+        # pl_dict["消耗品費・その他諸経費"][ym] = 消耗品 + 臨時
+        # pl_dict["その他固定費"][ym] = その他固定費
+        # pl_dict["家賃"][ym] = 家賃
+        # pl_dict["広告費"][ym] = 広告費
+        # pl_dict["融資返済利息"][ym] = 融資利息
         # pl_dict["営業利益"][ym] = 営業利益
 
 
@@ -159,12 +159,12 @@ def show_dashboard():
     df = insert_after(df, "原価", "原価率", pct_row(df.loc["原価"]))
     df = insert_after(df, "源泉税・地方税・社会保険料", "人件費率", pct_row(df.loc["人件費"] + df.loc["源泉税・地方税・社会保険料"]))
     df = insert_after(df, "人件費率", "FL比率", pct_row(df.loc["原価"] + df.loc["人件費"] + df.loc["源泉税・地方税・社会保険料"]))
-    df = insert_after(df, "水道光熱費", "水道光熱費率", pct_row(df.loc["水道光熱費"]))
-    df = insert_after(df, "消耗品費・その他諸経費", "消耗品・その他諸経費率", pct_row(df.loc["消耗品費・その他諸経費"]))
-    df = insert_after(df, "その他固定費", "その他固定費率", pct_row(df.loc["その他固定費"]))
-    df = insert_after(df, "家賃", "家賃率", pct_row(df.loc["家賃"]))
-    df = insert_after(df, "家賃率", "FLR比率", pct_row(df.loc["原価"] + df.loc["人件費"] + df.loc["源泉税・地方税・社会保険料"] + df.loc["家賃"]))
-    df = insert_after(df, "広告費", "広告費率", pct_row(df.loc["広告費"]))
+    # df = insert_after(df, "水道光熱費", "水道光熱費率", pct_row(df.loc["水道光熱費"]))
+    # df = insert_after(df, "消耗品費・その他諸経費", "消耗品・その他諸経費率", pct_row(df.loc["消耗品費・その他諸経費"]))
+    # df = insert_after(df, "その他固定費", "その他固定費率", pct_row(df.loc["その他固定費"]))
+    # df = insert_after(df, "家賃", "家賃率", pct_row(df.loc["家賃"]))
+    # df = insert_after(df, "家賃率", "FLR比率", pct_row(df.loc["原価"] + df.loc["人件費"] + df.loc["源泉税・地方税・社会保険料"] + df.loc["家賃"]))
+    # df = insert_after(df, "広告費", "広告費率", pct_row(df.loc["広告費"]))
     # df = insert_after(df, "営業利益", "営業利益率", pct_row(df.loc["営業利益"]))
 
     # --- 表示用変換 ---
@@ -194,12 +194,12 @@ def show_dashboard():
             "原価率": target.get("cost_rate", 0),
             "人件費率": target.get("labor_rate", 0),
             "FL比率": target.get("fl_rate", 0),
-            "水道光熱費率": target.get("utility_rate", 0),
-            "消耗品・その他諸経費率": target.get("misc_rate", 0),
-            "その他固定費率": target.get("other_fixed_rate", 0),
-            "家賃率": target.get("rent_rate", 0),
-            "FLR比率": target.get("flr_rate", 0),
-            "広告費率": target.get("ad_rate", 0),
+            # "水道光熱費率": target.get("utility_rate", 0),
+            # "消耗品・その他諸経費率": target.get("misc_rate", 0),
+            # "その他固定費率": target.get("other_fixed_rate", 0),
+            # "家賃率": target.get("rent_rate", 0),
+            # "FLR比率": target.get("flr_rate", 0),
+            # "広告費率": target.get("ad_rate", 0),
             # "営業利益率": target.get("first_op_profit_rate", 0)
         }
     else:
